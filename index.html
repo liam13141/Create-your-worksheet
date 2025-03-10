@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -81,6 +80,28 @@
             h1 {
                 display: none;
             }
+
+            .message {
+                display: none;
+            }
+
+            footer {
+                display: block;
+                text-align: center;
+                font-size: 14px;
+                padding: 10px;
+                margin-top: 20px;
+                background-color: #f9f9f9;
+                border-top: 1px solid #ccc;
+            }
+
+            footer p {
+                margin: 0;
+            }
+
+            footer .warning {
+                display: block;
+            }
         }
 
         .message {
@@ -110,9 +131,9 @@
     <h1>Create Your School Worksheet</h1>
 
     <!-- Message to Display -->
-    <div class="input-section no-print">
     <div class="message">
-        <p><strong>WARNING: Unauthorized reproduction or distribution of this website's code is prohibited. Legal action may be taken if copied.</strong></p>
+      <p>&copy; 2024-2025 Moon Lit Websites. All rights reserved</p>
+        <p><strong> WARNING: Unauthorized reproduction or distribution of this website's code is prohibited. Legal action may be taken if copied.</strong></p>
         <button class="dismiss-button" onclick="dismissMessage()">Dismiss</button>
     </div>
 
@@ -208,9 +229,9 @@
             const questionElement = document.createElement('div');
             questionElement.classList.add('question');
 
-            // Add the question number and text
+            // Add the question number and text (only once)
             const questionLabel = document.createElement('p');
-            questionLabel.textContent = `${questionNumber}. ${questionText}`; // Adding the question number
+            questionLabel.textContent = `${questionNumber}. ${questionText}`; // Adding the question number once
             questionElement.appendChild(questionLabel);
 
             // Add answer options based on the question type
@@ -243,17 +264,22 @@
 
             } else if (questionType === 'fillInBlank') {
                 const fillInBlankElement = document.createElement('p');
-                fillInBlankElement.textContent = questionText;
+                fillInBlankElement.textContent = questionText; // Only adding the question once
                 questionElement.appendChild(fillInBlankElement);
 
             } else if (questionType === 'trueFalse') {
-                const trueFalseElement = document.createElement('p');
-                trueFalseElement.textContent = "a. true";
-                questionElement.appendChild(trueFalseElement);
+                const trueFalseElement = document.createElement('div');
+                trueFalseElement.classList.add('answers');
+
+                const trueElement = document.createElement('p');
+                trueElement.textContent = "a. true";
+                trueFalseElement.appendChild(trueElement);
 
                 const falseElement = document.createElement('p');
                 falseElement.textContent = "b. false";
-                questionElement.appendChild(falseElement);
+                trueFalseElement.appendChild(falseElement);
+
+                questionElement.appendChild(trueFalseElement);
             }
 
             // Add the new question to the worksheet
@@ -268,36 +294,36 @@
             document.getElementById('answerB').value = '';
             document.getElementById('answerC').value = '';
             document.getElementById('answerD').value = '';
-
-            questionNumber++; // Increment the question number
+            document.getElementById('deleteQuestionNumber').value = '';
+            
+            // Increment the question number
+            questionNumber++;
         }
 
-        // Function to delete a question based on the input number
+        // Function to delete a question based on the number entered
         function deleteQuestion() {
-            const deleteNumber = parseInt(document.getElementById('deleteQuestionNumber').value);
-            
-            if (isNaN(deleteNumber) || deleteNumber < 1 || deleteNumber > questionElements.length) {
-                alert('Invalid question number');
+            const questionNumberToDelete = parseInt(document.getElementById('deleteQuestionNumber').value);
+
+            if (isNaN(questionNumberToDelete) || questionNumberToDelete < 1 || questionNumberToDelete >= questionNumber) {
+                alert('Please enter a valid question number');
                 return;
             }
 
-            // Remove the question from the DOM and from the array
-            const questionToDelete = questionElements[deleteNumber - 1];
+            // Remove the question element from the worksheet
+            const questionToDelete = questionElements[questionNumberToDelete - 1];
             questionToDelete.remove();
-            questionElements.splice(deleteNumber - 1, 1); // Remove from array
 
-            // Adjust the question numbers
-            updateQuestionNumbers();
-        }
+            // Remove the question element from the array
+            questionElements.splice(questionNumberToDelete - 1, 1);
 
-        // Function to update the question numbers
-        function updateQuestionNumbers() {
-            questionElements.forEach((question, index) => {
-                const questionLabel = question.querySelector('p');
+            // Adjust question numbering for remaining questions
+            questionElements.forEach((questionElement, index) => {
+                const questionLabel = questionElement.querySelector('p');
                 questionLabel.textContent = `${index + 1}. ${questionLabel.textContent.split('. ')[1]}`;
             });
 
-            questionNumber = questionElements.length + 1; // Update the next question number
+            // Decrement the question number
+            questionNumber--;
         }
 
         // Function to dismiss the warning message
@@ -305,11 +331,5 @@
             document.querySelector('.message').style.display = 'none';
         }
     </script>
-   <div class="input-section no-print"></div>
-    <footer style="text-align: center; padding: 20px; background-color: #f1f1f1;">
-        <p>&copy; 2024-2025 Moon Lit Websites™. All rights reserved.</p>
-        <p><strong>WARNING: Unauthorized reproduction or distribution of this website's code is prohibited. Legal action may be taken if copied.</strong></p>
-    </footer>
-
 </body>
 </html>
